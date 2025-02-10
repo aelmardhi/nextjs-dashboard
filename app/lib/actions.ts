@@ -52,7 +52,7 @@ export async function createInvoice( prevState: State,formData: FormData) {
         INSERT INTO invoices (customer_id, amount, status, date)
         VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
         `;
-        }catch(error){
+        }catch{
           return {
             message: 'Database Error: Failed to Create Invoice.',
           };
@@ -66,7 +66,7 @@ export async function createInvoice( prevState: State,formData: FormData) {
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
 export async function updateInvoice( id : string, prevState: State, formData: FormData) {
-    const validatedFields = CreateInvoice.safeParse({
+    const validatedFields = UpdateInvoice.safeParse({
         customerId: formData.get('customerId'),
         amount: formData.get('amount'),
         status: formData.get('status'),
@@ -87,7 +87,7 @@ export async function updateInvoice( id : string, prevState: State, formData: Fo
         SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
         WHERE id = ${id}
         `;
-      }catch(error){
+      }catch{
           return{
             message: `Failed to update invoice with id ${id}`
           };
@@ -101,7 +101,7 @@ export async function deleteInvoice(id: string) {
     try{
         await sql`DELETE FROM invoices WHERE id = ${id}`;
         revalidatePath('/dashboard/invoices');
-    }catch(error){
+    }catch{
         console.log('failed deleting invoice '+ id);
         
     }
